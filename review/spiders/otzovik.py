@@ -1,33 +1,28 @@
 import scrapy
+from review.items import ReviewItem
+from scrapy.loader import ItemLoader
+from time import time
 
 
 class OtzovikSpider(scrapy.Spider):
     name = 'otzovik'
     allowed_domains = ['otzovik.com']
     start_urls = ['https://otzovik.com/health/fragrance']
-    cookies = [{'domain': '.otzovik.com', 'expiry': 1652418908, 'httpOnly': False, 'name': 'csid', 'path': '/',
-                'secure': False, 'value': '3594085729'},
-               {'domain': '.otzovik.com', 'expiry': 1683954901, 'httpOnly': False, 'name': '_ym_uid', 'path': '/',
-                'secure': False, 'value': '1652418902444858460'},
-               {'domain': '.otzovik.com', 'expiry': 1683954901, 'httpOnly': False, 'name': '_ym_d', 'path': '/',
-                'secure': False, 'value': '1652418902'},
-               {'domain': '.otzovik.com', 'expiry': 1715577301, 'httpOnly': True, 'name': 'ssid', 'path': '/',
-                'secure': False, 'value': '3594085729'},
-               {'domain': '.otzovik.com', 'expiry': 1683954901, 'httpOnly': False, 'name': 'refreg', 'path': '/',
-                'secure': False,
-                'value': '1652418901~https%3A%2F%2Fotzovik.com%2Fhealth%2Ffragrance%2F%3F%26capt4a%3D1831652418894304'},
-               {'domain': '.otzovik.com', 'expiry': 1652490901, 'httpOnly': False, 'name': '_ym_isad', 'path': '/',
-                'secure': False, 'value': '2'},
-               {'domain': '.otzovik.com', 'httpOnly': True, 'name': 'ROBINBOBIN', 'path': '/', 'secure': False,
-                'value': 'a0a27080ee9d68f02132dfc36d'}]
+    cookies = [{'domain': '.otzovik.com', 'expiry': 1683959077, 'httpOnly': False, 'name': 'refreg', 'path': '/',
+                'secure': True,
+                'value': '1652423077~https%3A%2F%2Fotzovik.com%2Fhealth%2Ffragrance%2F%3F%26capt4a%3D4571652423066491'},
+               {'domain': '.otzovik.com', 'expiry': 1683959077, 'httpOnly': False, 'name': '_ym_d', 'path': '/',
+                'secure': True, 'value': '1652423078'},
+               {'domain': '.otzovik.com', 'expiry': 1683959077, 'httpOnly': False, 'name': '_ym_uid', 'path': '/',
+                'secure': True, 'value': '1652423078586409043'},
+               {'domain': '.otzovik.com', 'expiry': 1652495077, 'httpOnly': False, 'name': '_ym_isad', 'path': '/',
+                'secure': True, 'value': '2'},
+               {'domain': '.otzovik.com', 'httpOnly': True, 'name': 'ROBINBOBIN', 'path': '/', 'secure': True,
+                'value': '7afc807c9bc158516e3ccff5aa'},
+               {'domain': '.otzovik.com', 'expiry': 1715581855, 'httpOnly': True, 'name': 'ssid', 'path': '/',
+                'secure': False, 'value': '3594085729'}]
 
     def start_requests(self):
-        # Cookie - это строка cookie, полученная после входа в систему.
-        cookiesa = 'ab_var=9; _ym_uid=1642182277111621385; _ym_d=1650790107; ss_uid=16507901074258828; _ga=GA1.1.471788507.1650790107; v=fc; stats_s_a=nQLabnyAzHUjvFrVin%2FNY4zvpxU6yP1mLGyFId0iwBgJ7II%2FUeQYY9SHWOET6VilqH8crf7q0R5ssxRt3HrkbOFG4q4DQ%2B%2BHtugaODIrgZyEhRfyjV3H9ZvGG9zUU4Rktezif5iyia5kSPVx%2FVlLbmPUPxM053Fc0%2FjRVyv2aedbw%2FUsLXr361IbEGfz7sDHwVCxgJFD4UucOHu8oVym4XamyvrrUAknyqTg9yuLe9a4vQwYZjOqxtwLq9VauVuZtgiS2wmmkYo%3D; stats_u_a=TvoYVZvdZYFvh9%2BZitqd66F9dmiG362BqgPxo7ucGUAxKe0in2M4AK%2FM%2BYDBwq6Y7U%2BAWnV0A37Kwgb2om2ft6IkD%2BydlnC%2F%2BaJfXsuns20%3D; _ym_isad=1; _gid=GA1.1.1414163064.1652375890; _ym_visorc=b'
-        # Преобразовать в словарь
-        cookiesa = {i.split("=")[0]: i.split("=")[1] for i in cookiesa.split("; ")}
-        # headers = {"Cookie":cookies}
-        print(1)
         yield scrapy.Request(
             self.start_urls[0],
             callback=self.parse,
@@ -54,8 +49,20 @@ class OtzovikSpider(scrapy.Spider):
             yield response.follow(review_url, callback=self.parse_review)
 
     def parse_review(self, response):
+        item = ItemLoader(ReviewItem(), response)
         data = {
             'title': response.css('div.product-header a.product-name span::text')[0].extract(),
 
         }
-        yield data
+        item.add_value('id', response.url)
+        item.add_css('title', 'div.product-header a.product-name span::text')
+        item.add_css('rating', 'table.product-props abbr.rating::attr("title")')
+        item.add_css('recommend_to_friend', 'table.product-props td.recommend-ratio::text')
+        item.add_css('overall_impression', 'table.product-props i.summary::text')
+        item.add_css('product_rating_details', 'div.review-contents div.product-rating-details div::attr("title")')
+        item.add_css('review_likes', 'div.review-bar span.review-btn::text')
+        item.add_css('review_comments', 'div.review-bar span.review-comments')
+        item.add_css('dignities', 'div.review-contents div.review-plus::text')
+        item.add_css('disadvantages', 'div.review-contents div.review-minus::text')
+        item.add_css('review_text', 'iv.review-contents div.review-body::text')
+        yield item.load_item()
