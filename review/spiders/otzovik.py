@@ -1,22 +1,22 @@
 import scrapy
 from review.items import ReviewItem
 from scrapy.loader import ItemLoader
-from time import time
+import pickle
 
 
 class OtzovikSpider(scrapy.Spider):
     name = 'otzovik'
     allowed_domains = ['otzovik.com']
     start_urls = ['https://otzovik.com/health/fragrance']
-    cookies = [{'domain': '.otzovik.com', 'expiry': 1652431891, 'httpOnly': False, 'name': 'csid', 'path': '/', 'secure': False, 'value': '3594085729'}, {'domain': '.otzovik.com', 'expiry': 1683967883, 'httpOnly': False, 'name': '_ym_uid', 'path': '/', 'secure': False, 'value': '1652431884192666313'}, {'domain': '.otzovik.com', 'expiry': 1683967883, 'httpOnly': False, 'name': '_ym_d', 'path': '/', 'secure': False, 'value': '1652431884'}, {'domain': '.otzovik.com', 'expiry': 1715590283, 'httpOnly': True, 'name': 'ssid', 'path': '/', 'secure': False, 'value': '3594085729'}, {'domain': '.otzovik.com', 'expiry': 1683967883, 'httpOnly': False, 'name': 'refreg', 'path': '/', 'secure': False, 'value': '1652431883~https%3A%2F%2Fotzovik.com%2Fhealth%2Ffragrance%2F%3F%26capt4a%3D6111652431876257'}, {'domain': '.otzovik.com', 'expiry': 1652503883, 'httpOnly': False, 'name': '_ym_isad', 'path': '/', 'secure': False, 'value': '2'}, {'domain': '.otzovik.com', 'httpOnly': True, 'name': 'ROBINBOBIN', 'path': '/', 'secure': False, 'value': 'ba98d3d540f487702b9fdb31f0'}]
+
+    with open('../cookies.pickle', 'rb') as f:
+        cookies = pickle.load(f)
 
     def start_requests(self):
         yield scrapy.Request(
             self.start_urls[0],
             callback=self.parse,
-            cookies=self.cookies  # переносить cookies для запроса
-            # headers = headers
-        )
+            cookies=self.cookies)
 
     def parse(self, response):
         # Getting base pagination links
