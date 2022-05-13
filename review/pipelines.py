@@ -16,7 +16,7 @@ class ReviewPipeline:
 
 class CSVPipeline(object):
     def __init__(self):
-        self.file = 'database.csv'
+        self.file = '../database.csv'
 
         with open(self.file, 'r', newline='') as csv_file:
             reader = csv.DictReader(csv_file)
