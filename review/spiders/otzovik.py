@@ -63,7 +63,7 @@ class OtzovikSpider(scrapy.Spider):
         item.add_css('overall_impression', 'table.product-props i.summary::text')
         item.add_css('product_rating_details', 'div.review-contents div.product-rating-details div::attr("title")')
         item.add_css('review_count_likes', 'div.review-bar span.review-btn::text')
-        item.add_css('review_count_comments', 'div.review-bar a.review-comments')
+        item.add_css('review_count_comments', 'div.review-bar a.review-comments::text')
         item.add_css('dignities', 'div.review-contents div.review-plus::text')
         item.add_css('disadvantages', 'div.review-contents div.review-minus::text')
         item.add_css('review_text', 'div.review-contents div.review-body::text')
