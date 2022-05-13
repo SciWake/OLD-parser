@@ -8,19 +8,21 @@ class OtzovikSpider(scrapy.Spider):
     name = 'otzovik'
     allowed_domains = ['otzovik.com']
     start_urls = ['https://otzovik.com/health/fragrance']
-    cookies = [{'domain': '.otzovik.com', 'expiry': 1683959077, 'httpOnly': False, 'name': 'refreg', 'path': '/',
-                'secure': True,
-                'value': '1652423077~https%3A%2F%2Fotzovik.com%2Fhealth%2Ffragrance%2F%3F%26capt4a%3D4571652423066491'},
-               {'domain': '.otzovik.com', 'expiry': 1683959077, 'httpOnly': False, 'name': '_ym_d', 'path': '/',
-                'secure': True, 'value': '1652423078'},
-               {'domain': '.otzovik.com', 'expiry': 1683959077, 'httpOnly': False, 'name': '_ym_uid', 'path': '/',
-                'secure': True, 'value': '1652423078586409043'},
-               {'domain': '.otzovik.com', 'expiry': 1652495077, 'httpOnly': False, 'name': '_ym_isad', 'path': '/',
-                'secure': True, 'value': '2'},
-               {'domain': '.otzovik.com', 'httpOnly': True, 'name': 'ROBINBOBIN', 'path': '/', 'secure': True,
-                'value': '7afc807c9bc158516e3ccff5aa'},
-               {'domain': '.otzovik.com', 'expiry': 1715581855, 'httpOnly': True, 'name': 'ssid', 'path': '/',
-                'secure': False, 'value': '3594085729'}]
+    cookies = [{'domain': '.otzovik.com', 'expiry': 1652428086, 'httpOnly': False, 'name': 'csid', 'path': '/',
+                'secure': False, 'value': '3594085729'},
+               {'domain': '.otzovik.com', 'expiry': 1683964079, 'httpOnly': False, 'name': '_ym_uid', 'path': '/',
+                'secure': False, 'value': '1652428079121038912'},
+               {'domain': '.otzovik.com', 'expiry': 1683964079, 'httpOnly': False, 'name': '_ym_d', 'path': '/',
+                'secure': False, 'value': '1652428079'},
+               {'domain': '.otzovik.com', 'expiry': 1715586479, 'httpOnly': True, 'name': 'ssid', 'path': '/',
+                'secure': False, 'value': '3594085729'},
+               {'domain': '.otzovik.com', 'expiry': 1683964079, 'httpOnly': False, 'name': 'refreg', 'path': '/',
+                'secure': False,
+                'value': '1652428079~https%3A%2F%2Fotzovik.com%2Fhealth%2Ffragrance%2F%3F%26capt4a%3D4331652428071549'},
+               {'domain': '.otzovik.com', 'expiry': 1652500079, 'httpOnly': False, 'name': '_ym_isad', 'path': '/',
+                'secure': False, 'value': '2'},
+               {'domain': '.otzovik.com', 'httpOnly': True, 'name': 'ROBINBOBIN', 'path': '/', 'secure': False,
+                'value': '433815ad2d8d574165cbcaa265'}]
 
     def start_requests(self):
         yield scrapy.Request(
@@ -60,9 +62,13 @@ class OtzovikSpider(scrapy.Spider):
         item.add_css('recommend_to_friend', 'table.product-props td.recommend-ratio::text')
         item.add_css('overall_impression', 'table.product-props i.summary::text')
         item.add_css('product_rating_details', 'div.review-contents div.product-rating-details div::attr("title")')
-        item.add_css('review_likes', 'div.review-bar span.review-btn::text')
-        item.add_css('review_comments', 'div.review-bar span.review-comments')
+        item.add_css('review_count_likes', 'div.review-bar span.review-btn::text')
+        item.add_css('review_count_comments', 'div.review-bar a.review-comments')
         item.add_css('dignities', 'div.review-contents div.review-plus::text')
         item.add_css('disadvantages', 'div.review-contents div.review-minus::text')
-        item.add_css('review_text', 'iv.review-contents div.review-body::text')
+        item.add_css('review_text', 'div.review-contents div.review-body::text')
+
+        item.add_css('user_login', 'div.review-header div.login-col span::text')
+        item.add_css('user_karma', 'div.review-header div.karma-col div.karma::text')
+        item.add_css('reviews_count', 'div.review-header div.reviews-col a.reviews-counter::text')
         yield item.load_item()
