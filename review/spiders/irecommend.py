@@ -7,8 +7,7 @@ class IrecommendSpider(scrapy.Spider):
     start_urls = ['https://irecommend.ru/catalog/list/31']
 
     def parse(self, response):
-        # Getting pagination links
-        print()
+        # Getting base pagination links
         for page_url in response.css('div.item-list ul.pager li.pager-item a::attr("href")'):
             yield response.follow(page_url, callback=self.parse)
 
@@ -17,12 +16,13 @@ class IrecommendSpider(scrapy.Spider):
             yield response.follow(product_url, callback=self.parse_product)
 
     def parse_product(self, response):
+        # Getting product pagination links
         for prod_page_url in response.css('div.item-list ul.pager li a::attr("href")'):
             yield response.follow(prod_page_url, callback=self.parse_product)
 
         # Getting links to review
         for review_url in response.css('div.item-list ul.list-comments li.item div.reviewTitle a::attr("href")'):
-            yield response.follow(review_url, callback=self.parse_product)
+            yield response.follow(review_url, callback=self.parse_review)
 
     def parse_review(self, reponse):
-        pass
+        print(1)
