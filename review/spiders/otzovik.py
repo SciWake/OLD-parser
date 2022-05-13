@@ -8,21 +8,7 @@ class OtzovikSpider(scrapy.Spider):
     name = 'otzovik'
     allowed_domains = ['otzovik.com']
     start_urls = ['https://otzovik.com/health/fragrance']
-    cookies = [{'domain': '.otzovik.com', 'expiry': 1652428086, 'httpOnly': False, 'name': 'csid', 'path': '/',
-                'secure': False, 'value': '3594085729'},
-               {'domain': '.otzovik.com', 'expiry': 1683964079, 'httpOnly': False, 'name': '_ym_uid', 'path': '/',
-                'secure': False, 'value': '1652428079121038912'},
-               {'domain': '.otzovik.com', 'expiry': 1683964079, 'httpOnly': False, 'name': '_ym_d', 'path': '/',
-                'secure': False, 'value': '1652428079'},
-               {'domain': '.otzovik.com', 'expiry': 1715586479, 'httpOnly': True, 'name': 'ssid', 'path': '/',
-                'secure': False, 'value': '3594085729'},
-               {'domain': '.otzovik.com', 'expiry': 1683964079, 'httpOnly': False, 'name': 'refreg', 'path': '/',
-                'secure': False,
-                'value': '1652428079~https%3A%2F%2Fotzovik.com%2Fhealth%2Ffragrance%2F%3F%26capt4a%3D4331652428071549'},
-               {'domain': '.otzovik.com', 'expiry': 1652500079, 'httpOnly': False, 'name': '_ym_isad', 'path': '/',
-                'secure': False, 'value': '2'},
-               {'domain': '.otzovik.com', 'httpOnly': True, 'name': 'ROBINBOBIN', 'path': '/', 'secure': False,
-                'value': '433815ad2d8d574165cbcaa265'}]
+    cookies = [{'domain': '.otzovik.com', 'expiry': 1652431891, 'httpOnly': False, 'name': 'csid', 'path': '/', 'secure': False, 'value': '3594085729'}, {'domain': '.otzovik.com', 'expiry': 1683967883, 'httpOnly': False, 'name': '_ym_uid', 'path': '/', 'secure': False, 'value': '1652431884192666313'}, {'domain': '.otzovik.com', 'expiry': 1683967883, 'httpOnly': False, 'name': '_ym_d', 'path': '/', 'secure': False, 'value': '1652431884'}, {'domain': '.otzovik.com', 'expiry': 1715590283, 'httpOnly': True, 'name': 'ssid', 'path': '/', 'secure': False, 'value': '3594085729'}, {'domain': '.otzovik.com', 'expiry': 1683967883, 'httpOnly': False, 'name': 'refreg', 'path': '/', 'secure': False, 'value': '1652431883~https%3A%2F%2Fotzovik.com%2Fhealth%2Ffragrance%2F%3F%26capt4a%3D6111652431876257'}, {'domain': '.otzovik.com', 'expiry': 1652503883, 'httpOnly': False, 'name': '_ym_isad', 'path': '/', 'secure': False, 'value': '2'}, {'domain': '.otzovik.com', 'httpOnly': True, 'name': 'ROBINBOBIN', 'path': '/', 'secure': False, 'value': 'ba98d3d540f487702b9fdb31f0'}]
 
     def start_requests(self):
         yield scrapy.Request(
@@ -52,10 +38,6 @@ class OtzovikSpider(scrapy.Spider):
 
     def parse_review(self, response):
         item = ItemLoader(ReviewItem(), response)
-        data = {
-            'title': response.css('div.product-header a.product-name span::text')[0].extract(),
-
-        }
         item.add_value('id', response.url)
         item.add_css('title', 'div.product-header a.product-name span::text')
         item.add_css('rating', 'table.product-props abbr.rating::attr("title")')
