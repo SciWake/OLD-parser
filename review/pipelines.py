@@ -18,9 +18,9 @@ class CSVPipeline(object):
     def __init__(self):
         self.file = '../database.csv'
 
-        with open(self.file, 'r', newline='') as csv_file:
+        with open(self.file, 'r', newline='', encoding='UTF-8') as csv_file:
             reader = csv.DictReader(csv_file)
-            self.id_to_csv = [int(row['id']) for row in reader]
+            self.id_to_csv = [row['id'] for row in reader]
             self.column_name = reader.fieldnames
 
     def process_item(self, item, spider):
