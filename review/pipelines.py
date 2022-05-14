@@ -5,6 +5,7 @@
 
 
 # useful for handling different item types with a single interface
+import os
 import csv
 from itemadapter import ItemAdapter
 
@@ -16,7 +17,7 @@ class ReviewPipeline:
 
 class CSVPipeline(object):
     def __init__(self):
-        self.file = '../database.csv'
+        self.file = os.path.join(os.getcwd(), 'database.csv')
 
         with open(self.file, 'r', newline='', encoding='UTF-8') as csv_file:
             reader = csv.DictReader(csv_file)

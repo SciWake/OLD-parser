@@ -1,7 +1,8 @@
+import os
+import pickle
 import scrapy
 from review.items import ReviewItem
 from scrapy.loader import ItemLoader
-import pickle
 
 
 class OtzovikSpider(scrapy.Spider):
@@ -10,7 +11,7 @@ class OtzovikSpider(scrapy.Spider):
     start_urls = ['https://otzovik.com/health/fragrance']
 
     def start_requests(self):
-        with open('../cookies.pickle', 'rb') as f:
+        with open(os.path.join(os.getcwd(), 'cookies.pickle'), 'rb') as f:
             cookies = pickle.load(f)
 
         yield scrapy.Request(self.start_urls[0], callback=self.parse, cookies=cookies)
