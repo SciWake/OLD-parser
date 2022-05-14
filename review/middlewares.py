@@ -7,6 +7,7 @@ import time
 from scrapy import signals
 from scrapy.downloadermiddlewares.retry import RetryMiddleware
 from scrapy.utils.response import response_status_message
+from selenium_chrome.create_cookies import UpdateCookies
 
 # useful for handling different item types with a single interface
 from itemadapter import is_item, ItemAdapter
@@ -107,21 +108,20 @@ class ReviewDownloaderMiddleware:
 
 
 class UpdateCookiesRetryMiddleware(RetryMiddleware):
-
-    def __int__(self, crawler):
-        super(UpdateCookiesRetryMiddleware, self).__int__(crawler.settings)
+    def __init__(self, crawler):
+        super(UpdateCookiesRetryMiddleware, self).__init__(crawler.settings)
         self.crawler = crawler
 
     @classmethod
     def from_crawler(cls, crawler):
-        return cls(crawler.settings)
+        return cls(crawler)
 
     def process_response(self, request, response, spider):
         if request.meta.get('dont_retry', False):
             return response
         elif response.status == 507:
             self.crawler.engine.pause()
-            time.sleep(20)
+            selenium = UpdateCookies(response.url)
             self.crawler.engine.unpause()
             reason = response_status_message(response.status)
             return self._retry(request, reason, spider) or response
