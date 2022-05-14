@@ -9,14 +9,11 @@ class OtzovikSpider(scrapy.Spider):
     allowed_domains = ['otzovik.com']
     start_urls = ['https://otzovik.com/health/fragrance']
 
-    with open('../cookies.pickle', 'rb') as f:
-        cookies = pickle.load(f)
-
     def start_requests(self):
-        yield scrapy.Request(
-            self.start_urls[0],
-            callback=self.parse,
-            cookies=self.cookies)
+        with open('../cookies.pickle', 'rb') as f:
+            cookies = pickle.load(f)
+
+        yield scrapy.Request(self.start_urls[0], callback=self.parse, cookies=cookies)
 
     def parse(self, response):
         # Getting base pagination links
