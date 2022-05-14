@@ -25,9 +25,9 @@ class CSVPipeline(object):
 
     def process_item(self, item, spider):
         csv_file = open(self.file, 'a', newline='', encoding='UTF-8')
-        colums = item.fields.keys()
+        columns = item.fields.keys()
 
-        data = csv.DictWriter(csv_file, colums)
+        data = csv.DictWriter(csv_file, columns)
         if not self.column_name:
             data.writeheader()
             self.column_name = True
