@@ -122,6 +122,8 @@ class UpdateCookiesRetryMiddleware(RetryMiddleware):
         elif response.status == 507:
             self.crawler.engine.pause()
             selenium = UpdateCookies(response.url)
+            selenium.load_page()
+            selenium.update_cookies()
             self.crawler.engine.unpause()
             reason = response_status_message(response.status)
             return self._retry(request, reason, spider) or response
