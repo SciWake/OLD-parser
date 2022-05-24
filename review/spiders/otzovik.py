@@ -1,6 +1,7 @@
 import os
 import pickle
 import scrapy
+import csv
 from review.items import ReviewItem
 from scrapy.loader import ItemLoader
 
@@ -9,6 +10,9 @@ class OtzovikSpider(scrapy.Spider):
     name = 'otzovik'
     allowed_domains = ['otzovik.com']
     start_urls = ['https://otzovik.com/health/fragrance']
+
+    with open(os.path.join(os.getcwd(), 'database.csv'), 'r', newline='', encoding='UTF-8') as csv_file:
+        id_to_csv = [row['id'] for row in csv.DictReader(csv_file)]
 
     def start_requests(self):
         with open(os.path.join(os.getcwd(), 'cookies.pickle'), 'rb') as f:
@@ -32,6 +36,8 @@ class OtzovikSpider(scrapy.Spider):
 
         # Getting links to review
         for review_url in response.css('div.review-list-chunk div.mshow0 a.review-read-link::attr("href")'):
+            if 'https://otzovik.com' + review_url.extract() in self.id_to_csv:  # Повторный обход
+                continue
             yield response.follow(review_url, callback=self.parse_review)
 
     def parse_review(self, response):

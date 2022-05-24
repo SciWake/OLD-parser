@@ -28,5 +28,5 @@ class UpdateCookies(SeleniumChrome):
         self.captcha_checking()
 
     def update_cookies(self):
-        pickle.dump(self.browser.get_cookies(), open(f"cookies.pickle", "wb"))  # update cookies
+        pickle.dump(self.browser.get_cookies(), open(os.path.join(os.getcwd(), 'cookies.pickle'), "wb"))
         self.browser.quit()

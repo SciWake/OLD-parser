@@ -20,7 +20,7 @@ def join_text(text):
 
 
 class ReviewItem(scrapy.Item):
-    id = scrapy.Field(output_processor=TakeFirst())
+    id = scrapy.Field(input_processor=MapCompose(lambda x: x.replace('https://otzovik.com', '')), output_processor=TakeFirst())
     title = scrapy.Field(output_processor=TakeFirst())
     rating = scrapy.Field(input_processor=MapCompose(int), output_processor=TakeFirst())
     recommend_to_friend = scrapy.Field(output_processor=TakeFirst())
